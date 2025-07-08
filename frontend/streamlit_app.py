@@ -8,9 +8,8 @@ import streamlit as st
 # -----------------------------------------------------------------------------
 # Config
 # -----------------------------------------------------------------------------
-BACKEND_URL = os.getenv(
-    "BACKEND_URL",
-)
+BACKEND_URL = st.secrets.get("BACKEND_URL", "https://fallback-url.com")
+APP_DISPLAY_NAME = st.secrets.get("APP_DISPLAY_NAME", "JasminBot")
 
 st.set_page_config(page_title="JasminBot", page_icon="🤖")
 
