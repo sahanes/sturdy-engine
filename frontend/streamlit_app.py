@@ -4,15 +4,13 @@ import streamlit as st
 
 # BACKEND_URL="http://localhost:8000/"
 
-# in frontend/streamlit_app.py
-BACKEND_URL = "https://research-assistant-jasminbot.uc.r.appspot.com"
+
 # -----------------------------------------------------------------------------
 # Config
 # -----------------------------------------------------------------------------
-# BACKEND_URL = os.getenv(
-#     "BACKEND_URL",
-#     # "https://research-assistant-jasminbot.uc.r.appspot.com",  # default backend
-# )
+BACKEND_URL = os.getenv(
+    "BACKEND_URL",
+)
 
 st.set_page_config(page_title="JasminBot", page_icon="🤖")
 
