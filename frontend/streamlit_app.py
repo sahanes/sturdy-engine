@@ -426,6 +426,11 @@ import streamlit as st
 import time
 import re
 
+try:
+    from streamlit_js_eval import streamlit_js_eval  # type: ignore
+except ImportError:
+    streamlit_js_eval = None
+        
 # Use environment variable for the backend URL, with a local default
 BACKEND_URL = os.getenv("BACKEND_URL", "http://localhost:8000/")
 
