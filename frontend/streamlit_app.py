@@ -425,7 +425,7 @@ import requests
 import streamlit as st
 import time
 import re
-
+import uuid
 try:
     from streamlit_js_eval import streamlit_js_eval  # type: ignore
 except ImportError:
