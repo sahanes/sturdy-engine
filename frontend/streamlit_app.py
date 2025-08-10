@@ -434,13 +434,159 @@ st.set_page_config(page_title="JasminBot", page_icon="🤖")
 # -----------------------------------------------------------------------------
 # Helper function to call the backend
 # -----------------------------------------------------------------------------
-def post_chat(message: str):
+# def post_chat(message: str):
+#     """Call the backend and return the full response dictionary."""
+#     try:
+#         start_time = time.time()
+#         r = requests.post(
+#             f"{BACKEND_URL}/api/chat",
+#             json={"message": message},
+#             timeout=300,  # 5 minutes for comprehensive research and guidance
+#         )
+#         end_time = time.time()
+        
+#         r.raise_for_status()
+#         data = r.json()
+#         data["response_time"] = end_time - start_time
+#         return data
+        
+#     except Exception as exc:
+#         error_response = {
+#             "response": f"❌ Error contacting backend: {exc}",
+#             "intent": "Error",
+#             "response_time": 0,
+#             "references": "" # Ensure references key exists in error case
+#         }
+#         return error_response
+
+# # -----------------------------------------------------------------------------
+# # Session state initialization
+# # -----------------------------------------------------------------------------
+# if "messages" not in st.session_state:
+#     # Each message is a dictionary containing role, content, and optionally other data
+#     st.session_state.messages = []
+
+# # -----------------------------------------------------------------------------
+# # UI Layout
+# # -----------------------------------------------------------------------------
+
+# # Welcome message
+# if not st.session_state.messages:
+#     st.markdown(
+#         """
+#         **JasminBot — Connecting STEM Innovators with Investors**
+# Specialized in Food & Beverage, Education, and Generative AI sectors
+
+# 💡 Ask me about:
+
+# • Companies similar to Jasmin Groups (investor platforms, accelerators)
+# → Get structured info: legal structure, industry focus, service overlap
+
+# • Investment opportunities in FoodTech, EdTech, and AI sectors
+# → Receive market analysis with funding landscape and next steps
+
+# • Our consulting, mentorship, and due-diligence services
+# → Learn capabilities, target audience, and how to get started
+#         """,
+#         unsafe_allow_html=False,
+#     )
+
+# # Display chat history from session state
+# for message in st.session_state.messages:
+#     with st.chat_message(message["role"]):
+#         # Display the intent badge if it exists for a message
+#         if message["role"] == "assistant" and "intent" in message and message["intent"]:
+#             st.markdown(
+#                 f"<div style='text-align: right; width: 100%; margin-bottom: -20px;'><span style='background:#00a36e;color:white;padding:2px 8px;border-radius:12px;font-size:0.75rem;'>{message['intent']}</span></div>",
+#                 unsafe_allow_html=True,
+#             )
+#         # Render the content, allowing HTML for our clickable links
+#         st.markdown(message["content"], unsafe_allow_html=True)
+#         if "response_time" in message and message["response_time"] > 0:
+#             st.caption(f"⏱️ Response time: {message['response_time']:.2f} seconds")
+
+
+# # Main chat input and response logic
+# if prompt := st.chat_input("Ask about startups, investing, or our services..."):
+#     # Add user's message to history and display it
+#     st.session_state.messages.append({"role": "user", "content": prompt})
+#     with st.chat_message("user"):
+#         st.markdown(prompt)
+
+#     # Get and display the bot's response
+#     with st.chat_message("assistant"):
+#         with st.spinner("Thinking..."):
+#             full_response = post_chat(prompt)
+            
+#             answer = full_response.get("response", "I'm sorry, I encountered an error.")
+#             intent = full_response.get("intent", None)
+#             response_time = full_response.get("response_time", 0)
+#             references_text = full_response.get("references", "")
+            
+#             # This is the crucial logic block for making citations clickable
+#             if references_text:
+#                 ref_map = {}
+#                 for line in references_text.strip().split('\n'):
+#                     match = re.match(r'\[(\d+)\]\s*\[(.*?)\]\((.*?)\)', line)
+#                     if match:
+#                         num, title, url = match.groups()
+#                         placeholder = f"[{num}]"
+#                         # Using superscript for a cleaner look, with a hover title
+#                         full_link = f'<sup><a href="{url}" target="_blank" title="{title}">[{num}]</a></sup>'
+#                         ref_map[placeholder] = full_link
+                
+#                 # Replace all placeholders in the answer with the full HTML links
+#                 # for placeholder, link in sorted(ref_map.items(), key=lambda x: len(x[0]), reverse=True):
+#                 #     answer = answer.replace(placeholder, link)
+#                 # NEW: Handle multiple citations like [1, 4] or [2, 3, 5]
+#                 def replace_multiple_citations(text):
+#                     pattern = r'\[(\d+(?:,\s*\d+)*)\]'
+#                     def replacer(match):
+#                         citation_nums = [num.strip() for num in match.group(1).split(',')]
+#                         links = []
+#                         for num in citation_nums:
+#                             if f"[{num}]" in ref_map:
+#                                 # Extract just the link part from the ref_map
+#                                 link_html = ref_map[f"[{num}]"].replace('<sup>', '').replace('</sup>', '')
+#                                 links.append(link_html)
+#                             else:
+#                                 links.append(f'[{num}]')  # Keep as plain text if no reference found
+#                         return '<sup>' + ', '.join(links) + '</sup>'
+                    
+#                     return re.sub(pattern, replacer, text)
+                
+#                 answer = replace_multiple_citations(answer)
+
+#             # Display the intent badge for the new message
+#             # if intent and intent != "Greeting":
+#             #     st.markdown(
+#             #         f"<div style='text-align: right; width: 100%; margin-bottom: -20px;'><span style='background:#00a36e;color:white;padding:2px 8px;border-radius:12px;font-size:0.75rem;'>{intent}</span></div>",
+#             #         unsafe_allow_html=True,
+#             #     )
+            
+#             # Display the final, formatted answer (now with HTML links)
+#             st.markdown(answer, unsafe_allow_html=True)
+#             if response_time > 0:
+#                 st.caption(f"⏱️ Response time: {response_time:.2f} seconds")
+
+#             # Add the complete assistant message to the session state for history
+#             st.session_state.messages.append({
+#                 "role": "assistant",
+#                 "content": answer, # Save the version with clickable links
+#                 # "intent": intent,
+#                 "response_time": response_time
+#             })
+def post_chat(message: str, thread_id: str):
     """Call the backend and return the full response dictionary."""
     try:
         start_time = time.time()
+        payload = {
+            "message": message,
+            "session_id": thread_id.replace("session_", ""),
+        }
         r = requests.post(
             f"{BACKEND_URL}/api/chat",
-            json={"message": message},
+            json=payload,
             timeout=300,  # 5 minutes for comprehensive research and guidance
         )
         end_time = time.time()
@@ -465,6 +611,22 @@ def post_chat(message: str):
 if "messages" not in st.session_state:
     # Each message is a dictionary containing role, content, and optionally other data
     st.session_state.messages = []
+
+# Ensure persistent thread_id for this browser tab using localStorage (survives hard refresh)
+def _get_or_create_thread_id():
+    if streamlit_js_eval is None:
+        return f"session_{uuid.uuid4().hex[:12]}"
+    existing = streamlit_js_eval(js_expressions="localStorage.getItem('thread_id')")
+    if existing:
+        return existing
+    new_id = f"session_{uuid.uuid4().hex[:12]}"
+    streamlit_js_eval(js_expressions=f"localStorage.setItem('thread_id', '{new_id}')")
+    return new_id
+
+if "thread_id" not in st.session_state:
+    st.session_state.thread_id = _get_or_create_thread_id()
+
+# We let backend assign user_id if not provided
 
 # -----------------------------------------------------------------------------
 # UI Layout
@@ -516,7 +678,7 @@ if prompt := st.chat_input("Ask about startups, investing, or our services..."):
     # Get and display the bot's response
     with st.chat_message("assistant"):
         with st.spinner("Thinking..."):
-            full_response = post_chat(prompt)
+            full_response = post_chat(prompt, st.session_state.thread_id)
             
             answer = full_response.get("response", "I'm sorry, I encountered an error.")
             intent = full_response.get("intent", None)
